@@ -1,0 +1,207 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="utf-8">
+        <title>shopList</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    </head>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarEdit">
+            </script>
+            <!--表格主体-->
+            <table id="LAY-message-table" lay-filter="LAY-message-table" ></table>
+            <script type="text/html" id="table-message-edit">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="addContent">添加评论</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="addMessageLike">点赞</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="messageForward">转发</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="contentList">评论列表</a>
+            </script>
+
+
+        </div>
+    </div>
+</div>
+
+<script src="../../layuiadmin/layui/layui.js"></script>
+
+
+<script>
+    layui.define(['table', 'form'], function(exports){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,table = layui.table
+            ,form = layui.form;
+
+        //用户管理
+        table.render({
+            elem: '#LAY-message-table'//LAY-shop-table 表格的ID
+            ,url: 'messageAllAjax' //接口*/
+            ,toolbar: '#toolbarEdit'  //添加删除工作栏
+            ,method: 'POST'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', sort: true}
+                ,{field: 'uid', title: '用户ID' }
+                ,{field: 'username', title: '用户名' }
+                ,{field: 'nickname', title: '用户昵称' }
+                ,{field: 'content', title: '朋友圈内容' }
+                ,{field: 'picture', title: '图片'}
+                ,{field: 'location', title: '位置' }
+                ,{field: 'content', title: '内容信息'}
+                ,{field: 'time', title: '发布时间'}
+                ,{field: 'awesome', title: '点赞次数'}
+                ,{title: '操作',  align:'center', fixed: 'right', toolbar: '#table-message-edit',width: 360}
+            ]]
+            ,page: true
+            ,limit: 10
+            ,height: '550px'
+            ,text: '对不起，加载出现异常！'
+        });
+        //监听工具条  监听的是Lay_filter
+        table.on('tool(LAY-message-table)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            //点赞操作
+            if(layEvent === 'addMessageLike'){
+
+                // 点赞操作 传递的参数是朋友圈内容id
+                    $.ajax({
+                        type: "post"
+                        ,url: "addMessageLikeAjax"
+                        ,async: false
+                        ,data: {"mid":data.id,"uid":uid}  //朋友圈id
+                        ,traditional: true
+                        //,dataType: "json"
+                        ,success: function(res){
+                            layer.msg('点赞成功', {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 2000
+                            }, function(){
+                                //location.href= '/views/user/login.html'; //跳转到登入页
+                                //table.reload('LAY-shop-table'); //数据刷新
+                                table.reload('LAY-message-table');
+                            });
+                            return false
+                        }
+                    });
+
+                    //评论列表
+            } else if(layEvent === 'contentList'){
+             //   layer.alert('编辑行：<br>'+ JSON.stringify(data))
+                //跳转到朋友圈评论页面
+                function jump(){
+                    location.href= '/views/message/contentList.html';
+                }
+
+                //设置用户名的cookie
+                document.cookie="mid="+data.id;
+
+                jump();
+
+                /*添加评论*/
+            }else if(layEvent === 'addContent'){
+                layer.open({
+                    type: 2
+                    ,title: '添加评论'
+                    ,content: 'contentForm.html'
+                    ,area:  [ '400px','480px']
+                    ,btn: ['确定', '取消']
+                    ,success: function(layero,index){
+                        var body = layer.getChildFrame('body',index);//绑定父子之间的关系，用于数据传递，缺少则无法传递
+                        //将夫页面内容传给子页面
+                        body.find('#mid').val(data.id);
+                        body.find('#uid').val(data.uid);
+                        body.find('#username').val(data.username);
+                        body.find('#nickname').val(data.nickname);
+
+                    }
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'LAY-shop-add-submit' //提交的ID
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+                            var field = data.field; //获取提交的字段
+                            layer.alert( JSON.stringify(field));
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            //请求接口
+                            $.ajax({
+                                type: "post"
+                                ,url: "addContentAjax"
+                                ,async: false
+                                ,cache: false
+                                ,data: field
+                                ,dataType: "json"
+                                ,success: function(res){
+                                    layer.msg('添加成功', {
+                                        offset: '15px'
+                                        ,icon: 1
+                                        ,time: 1000
+                                    }, function(){
+                                        //location.href= '/views/user/login.html'; //跳转到登入页
+                                        //table.reload('LAY-shop-table'); //数据刷新
+                                        table.reload('LAY-message-table');
+                                    });
+                                    layer.close(index);
+                                    return false
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });
+                //点击转发 将内容存到转发表中
+            }else if(layEvent === 'messageForward'){
+                // 转发操作 将朋友圈id 用户id 存入转发表中
+                $.ajax({
+                    type: "post"
+                    ,url: "messageForwardAjax"
+                    ,async: false
+                    ,data: {"mid":data.id,"uid":data.uid,"time":"2019-04-22"}  //朋友圈id
+                    ,traditional: true
+                    //,dataType: "json"
+                    ,success: function(res){
+                        layer.msg('转发成功', {
+                            offset: '15px'
+                            ,icon: 1
+                            ,time: 2000
+                        }, function(){
+                            //location.href= '/views/user/login.html'; //跳转到登入页
+                            //table.reload('LAY-shop-table'); //数据刷新
+                            table.reload('LAY-message-table');
+                        });
+                        return false
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+
+
+</body>
+</html>

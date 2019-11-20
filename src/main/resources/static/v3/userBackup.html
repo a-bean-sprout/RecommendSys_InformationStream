@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人资料</title>
+    <link rel="icon" href="images/head_logo.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="skin/font/css/font-awesome.min.css" />
+    <link rel='stylesheet' id='style-css' href='css/style.css' type='text/css' media='all' />
+    <link rel="stylesheet" type="text/css" href="skin/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="skin/css/user.css" />
+    <link rel="stylesheet" type="text/css" href="skin/css/newstyle.css" />
+    <link rel="stylesheet" type="text/css" href="skin/css/account.css" />
+
+    <style>
+        .menu-bar {
+            top: 0px;
+        }
+
+        body {
+            margin: 0px;
+        }
+
+        .m-logo {
+            margin-top: 0px;
+        }
+
+        .header {
+            margin-top: 55px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .tab-content:after, .nav-tabs > li.active > a:after {
+            background-color: #6a6666;
+        }
+
+        .btn-default {
+            background-color: #108EE9;
+            border-color: #108EE9;
+        }
+
+        .tab-content input.form-control {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="menu-bar">
+    <div class="head_content">
+        <h1 class="m-logo"><a href="index.html"></a></h1>
+        <div id="nav" class="menu-menu-1-container">
+            <ul id="menu-menu-1" class="menu">
+                <li class="menu-item"><a href="index.html">推荐列表</a></li>
+                <!--<li class="menu-item"><a href="video.html">图片</a></li>
+                <li class="menu-item"><a href="video.html">视频</a></li>
+                <li class="menu-item"><a href="video.html">热门</a></li>
+                <li class="menu-item"><a href="video.html">精选</a></li>
+                -->
+                <li class="menu-item"><a href="video.html">视频列表</a></li>
+                <div style="position:fixed;right:35pt ">
+                    <li class="menu-item"><a href="user.html">个人信息</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="header" >
+    <div class="user-info">
+        <div class="w1200">
+            <!--头像去掉
+            <div class="user-headface">
+                <img src="http://www.17sucai.com/preview/1424582/2018-10-22/user/statics/images/user_face.jpg" />
+            </div>
+            -->
+            <div class="user-account" id="user-account">
+                <p class="tip">您好，{{nickName}}</p>
+                <p class="account">
+                    <span>账号：{{userName}}</span>
+                    <span>昵称：{{nickName}}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="center">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidebar">
+                <div class="block leftMenuBar">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="message.html"><i class="fa fa-envelope"></i>系统消息</a>
+                        </li>
+                        <li class="list-group-item active">
+                            <a><i class="fa fa-book"></i>个人资料</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="setting.html"><i class="fa fa-wrench"></i>账号安全</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="main col-md-9">
+            <div>
+                <ul class="nav nav-tabs mt-0" role="tablist">
+                    <li class="active"><a><i class="fa fa-book pr-5"></i>个人资料</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade in active">
+                        <div class="row">
+                            <div>
+                                <iframe src="../views/set/user/updateInfo.html"
+                                        height="500"
+                                        width="1000"
+                                        frameborder="0"
+                                        scrolling="0"
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='js/vue.min.js'></script>
+<script type='text/javascript' src='js/center.js'></script>
+<script type='text/javascript' src='js/userInfo.js'></script>
+</body>
+</html>

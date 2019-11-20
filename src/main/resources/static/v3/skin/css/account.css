@@ -1,0 +1,8 @@
+﻿.leftMenuBar .list-group li.list-group-item a, .leftMenuBar .list-group dads a, .leftMenuBar .list-group das a {
+  display: block;
+  color: #6a6666; }
+
+.leftMenuBar .list-group li.list-group-item.active, .leftMenuBar .list-group dads.active, .leftMenuBar .list-group das.active {
+  background-color: unset;
+  border: 1px solid #FFFFFF;
+  border-left: 3px solid #6a6666; }

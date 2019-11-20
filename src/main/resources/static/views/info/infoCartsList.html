@@ -1,0 +1,230 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="utf-8">
+        <title>召回管理</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    </head>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+
+                <div class="demoTable">
+                    账号：
+                    <div class="layui-inline">
+                        <input class="layui-input" name="city" id="searchReload" autocomplete="off">
+                    </div>
+                    <button class="layui-btn" data-type="reload">搜索</button>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/html" id="usersBarEdit">
+        </script>
+
+            <!--表格主体-->
+            <table id="LAY-user-users" lay-filter="LAY-user-users"></table>
+
+            <script type="text/html" id="table-users-fansAndFollows" lay-filter="table-users-fansAndFollows">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+            </script>
+
+            <script type="text/html" id="img">
+                <img style="display: inline-block; width: 70%; height: 90%;" src= {{d.image}}>
+            </script>
+
+        </div>
+    </div>
+</div>
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script>
+
+    layui.define(['table', 'form'], function(exports){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,table = layui.table
+            ,form = layui.form;
+
+        /*读取cookie的函数*/
+        function getCookie(name)
+        {
+            var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+            if(arr=document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+
+
+        var uid=getCookie("uid");
+        var username=getCookie("username");
+
+
+
+
+        //用户管理
+        table.render({
+            elem: '#LAY-user-users'//LAY-shop-table 表格的ID
+            ,url: 'getInfoCartsAjax' //模拟接口*/
+            ,toolbar: '#usersBarEdit'  //添加删除工作栏
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: '用户ID', sort: true}
+                ,{field: 'username', title: '账号'}
+                ,{field: 'nickname', title: '昵称'}
+                ,{field: 'sex', title: '性别'}
+                ,{field: 'age', title: '年龄'}
+                ,{field: 'favoriteCat1', title: '兴趣一'}
+                ,{field: 'favoriteCat2', title: '兴趣二'}
+                ,{field: 'favoriteCat3', title: '兴趣三'}
+                ,{field: 'userProfession', title: '职业'}
+                ,{field: 'address', title: '所在城市'}
+                ,{title: '操作', align:'center', fixed: 'right',toolbar:'#table-users-fansAndFollows' }
+           ]]
+            ,page: true
+            ,limit: 10
+            ,height: '550px'
+            ,text: '对不起，加载出现异常！'
+            ,id: 'userTable'  //表格的id
+        });
+
+
+
+
+        //监听工具条
+        table.on('tool(LAY-user-users)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'delete'){
+                layer.confirm('真的删除行么', function(index){
+                    //删除一个
+                    $.ajax({
+                        type: "post"
+                        ,url: "http://localhost:80/views/info/delUsersByIdAjax"
+                        ,async: false
+                        ,data: {id:data.id}
+                        ,traditional: true
+                        //,dataType: "json"
+                        ,success: function(res){
+                            layer.msg('删除成功', {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 1000
+                            })
+                            return false
+                        }
+                    });
+                    layer.close(index);
+                    table.reload('userTable'); //数据刷新
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    type: 2
+                    ,title: '编辑网站用户'
+                    ,content: 'updateCartsform.html'
+                    ,area:  ['380px', '450px']
+                    ,btn: ['确定', '取消']
+                    ,success: function(layero,index){
+                        var body = layer.getChildFrame('body',index);//绑定父子之间的关系，用于数据传递，缺少则无法传递
+                        //将夫页面内容传给子页面
+                        body.find('#id').val(data.id);
+                        body.find('#username').val(data.username);
+                        body.find('#nickname').val(data.nickname);
+                        body.find('#sex').val(data.sex);
+                        body.find('#age').val(data.age);
+                        body.find('#favoriteCat1').val(data.favoriteCat1);
+                        body.find('#favoriteCat2').val(data.favoriteCat2);
+                        body.find('#favoriteCat3').val(data.favoriteCat3);
+                        body.find('#favoriteCat3').val(data.favoriteCat3);
+                        body.find('#userProfession').val(data.userProfession);
+                        body.find('#address').val(data.address);
+
+                    }
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'LAY-shop-add-submit' //提交的ID
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+                            var field = data.field; //获取提交的字段
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            //请求接口
+                            $.ajax({
+                                type: "post"
+                                ,url: "updateInfoCartsAjax"
+                                ,async: false
+                                ,cache: false
+                                ,data: field
+                                ,dataType: "json"
+                                ,success: function(res){
+                                    layer.msg('更新成功', {
+                                        offset: '15px'
+                                        ,icon: 1
+                                        ,time: 1000
+                                    }, function(){
+                                        table.reload('userTable');
+                                    });
+                                    layer.close(index)
+                                    return false
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+
+                });
+
+
+
+
+            }
+
+        });
+
+
+
+        //执行表格重载的操作
+        var $ = layui.$, active = {
+            reload: function(){
+                var searchReload = $('#searchReload'); //得到input框的内容
+
+                //执行重载
+                table.reload('userTable', {//表格id
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        username: searchReload.val()
+                    }
+                    ,url:"getInfoUserByUsernameAjax"
+                });
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+
+    });
+
+
+
+
+</script>
+</body>
+</html>

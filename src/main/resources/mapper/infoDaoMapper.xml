@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocean.org.dao.infoDao">
+
+
+    <!--得到召回信息-->
+    <select id="getAllInfo" resultType="com.ocean.org.domain.info">
+       SELECT * FROM info
+    </select>
+
+    <!--得到用户信息-->
+    <select id="getInfoUsers" resultType="com.ocean.org.domain.users">
+        SELECT * FROM  users
+    </select>
+
+    <!--根据召回类型查找信息-->
+    <select id="getInfoByType" resultType="com.ocean.org.domain.info" parameterType="String">
+        SELECT * FROM info
+        WHERE info.infoType=#{infoType}
+    </select>
+
+    <!--根据用户名查找用户-->
+    <select id="getInfoUserByUsername" resultType="com.ocean.org.domain.users" parameterType="String">
+        SELECT
+        *
+        FROM
+        users
+        WHERE
+        username=#{username}
+    </select>
+
+    <delete id="delInfoById" parameterType="Integer">
+        DELETE FROM
+        info
+        WHERE
+        info.id=#{id}
+    </delete>
+
+    <delete id="delUsersById" parameterType="Integer">
+        DELETE FROM
+        users
+        WHERE
+        users.id=#{id}
+    </delete>
+
+    <update id="updateInfoUser" parameterType="com.ocean.org.domain.users">
+        UPDATE
+            users
+        SET
+            users.username=#{username},
+            users.nickname=#{nickname},
+            users.finterest=#{finterest},
+            users.sinterest=#{sinterest},
+            users.tinterest=#{tinterest}
+        WHERE
+            users.id=#{id}
+    </update>
+
+    <update id="updateInfoCarts" parameterType="com.ocean.org.domain.users">
+        UPDATE
+        users
+        SET
+        users.username=#{username},
+        users.nickname=#{nickname},
+        users.sex=#{sex},
+        users.age=#{age},
+        users.favoriteCat1=#{favoriteCat1},
+        users.favoriteCat2=#{favoriteCat2},
+        users.favoriteCat3=#{favoriteCat3},
+        users.userProfession=#{userProfession},
+        users.address=#{address},
+        users.company=#{company}
+
+        WHERE
+        users.id=#{id}
+    </update>
+
+</mapper>

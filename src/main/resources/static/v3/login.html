@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - 信息流推荐系统</title>
+    <link rel="icon" href="images/head_logo.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/login.css" media="all">
+    <link rel='stylesheet' id='style-css' href='css/style.css' type='text/css' media='all' />
+    <link rel="stylesheet" type="text/css" href="skin/font/css/font-awesome.min.css" />
+    <!--<link rel="stylesheet" type="text/css" href="skin/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="skin/css/bootstrap.min.css" />-->
+    <link rel="stylesheet" href="skin/css/login.css">
+    <style>
+        .menu-bar {
+            top: 0px;
+        }
+
+        body {
+            margin: 0px;
+        }
+
+        .m-logo a {
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="menu-bar">
+    <div class="head_content">
+        <h1 class="m-logo"><a href="index.html"></a></h1>
+        <div id="nav" class="menu-menu-1-container">
+            <ul id="menu-menu-1" class="menu">
+                <li class="menu-item"><a href="index.html">推荐列表</a></li>
+                <!--<li class="menu-item"><a href="video.html">图片</a></li>
+                <li class="menu-item"><a href="video.html">视频</a></li>
+                <li class="menu-item"><a href="video.html">热门</a></li>
+                <li class="menu-item"><a href="video.html">精选</a></li>
+                -->
+                <li class="menu-item"><a href="video.html">视频列表</a></li>
+                <!--登陆页是无法查看个人信息的
+                <li class="menu-item"><a href="user.html">个人信息</a></li>
+                -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form class="_regForm">
+                <h1 style="margin-bottom:13px;color:#383838;letter-spacing: 0.5px;">基于用户行为的多样化推荐系统</h1>
+                <!--
+                <div class="social-container">
+                    <a class="social"><i class="fa fa-qq"></i></a>
+                    <a class="social"><i class="fa fa-wechat"></i></a>
+                    <a class="social"><i class="fa fa-weibo"></i></a>
+                </div>
+                <span>第三方账号注册</span>
+                -->
+                <input type="text" class="_userName" placeholder="账号" />
+                <input type="password" class="_password" placeholder="密码" />
+                <input type="password" class="_confirm" placeholder="确认密码" />
+                <input type="text" class="_nickName" placeholder="昵称" />
+                <button class="_register" type="button">注册</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form class="_logForm">
+                <h1 style="margin-bottom:13px;color:#383838;letter-spacing: 0.5px;">基于用户行为的多样化推荐系统</h1>
+                <!--
+                <div class="social-container">
+                    <a class="social"><i class="fa fa-qq"></i></a>
+                    <a class="social"><i class="fa fa-wechat"></i></a>
+                    <a class="social"><i class="fa fa-weibo"></i></a>
+                </div>
+                <span>账号登录</span>
+                -->
+                <input type="text" class="_userName" placeholder="账号" />
+                <input type="password" class="_password" placeholder="密码" />
+                <a></a>
+                <button class="_login" type="button">登录</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>欢迎回来！</h1>
+                    <p>如果您已经注册账号,请直接登陆...</p>
+                    <button class="ghost" id="signIn">登录</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>你好朋友！</h1>
+                    <p>欢迎您访问基于用户行为的多样化推荐系统...</p>
+                    <button class="ghost" id="signUp">注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-trans layadmin-user-login-footer">
+        <p>© 2019 <a href="../views/user/login.html" target="_blank">基于用户行为的多样化推荐系统</a></p>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="skin/js/index.js"></script>
+    <script src="js/account.js"></script>
+    <script>
+        //注意：导航 依赖 element 模块，否则无法进行功能性操作
+        layui.use('element', function(){
+            var element = layui.element;
+
+            //…
+        });
+</script>
+
+</body>
+</html>

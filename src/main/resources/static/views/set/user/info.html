@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>设置我的资料</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">设置我的资料</div>
+          <div class="layui-card-body" pad15>
+            <div class="layui-form" lay-filter="userEdit">
+              <div class="layui-form-item">
+                <label class="layui-form-label">角色设置</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="role" id="role"  class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">您是商户还是个人</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="username" id="username" lay-verify="required" readonly="true" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">用户名不可被修改</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">昵称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="nickname" id="nickname" lay-verify="required" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">性别</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="sex"  value="男" title="男" >
+                  <input type="radio" name="sex"   value="女" title="女" checked="true">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">头像</label>
+                <div class="layui-input-inline">
+                  <input name="image" lay-verify="required" id="image" class="layui-input">
+                </div>
+                <button type="button" class="layui-btn layui-btn-primary" lay-filter="LAY_imageUpload" id="LAY_imageUpload">
+                  <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">背景图片</label>
+                <div class="layui-input-inline">
+                  <input name="cover" lay-verify="required" id="cover" class="layui-input">
+                </div>
+                <button type="button" class="layui-btn layui-btn-primary" lay-filter="LAY_backgroundimageUpload" id="LAY_backgroundimageUpload">
+                  <i class="layui-icon">&#xe67c;</i>上传背景图片
+                </button>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">手机</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="phone" id="phone" lay-verify="phone" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="email" id="email"  value="" lay-verify="email" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">省份</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="province" id="province" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+              <label class="layui-form-label">城市</label>
+              <div class="layui-input-inline">
+                <input type="text" name="city" id="city" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">车牌号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="carnumber" id="carnumber" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">生日</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="birthday" id="birthday" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">个性签名</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="signature" id="signature" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="setUserInfo" name="setUserInfo" id="setUserInfo">确认修改</button>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script src="../../../js/jquery-3.2.1.min.js"></script>
+
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'set']);
+
+
+
+  </script>
+
+
+ <script type="application/javascript">
+
+      //对表单的操作
+     layui.use(['form', 'layedit', 'laydate'], function(){
+         var form = layui.form
+             ,layer = layui.layer
+             ,layedit = layui.layedit
+             ,laydate = layui.laydate;
+
+         function get_cookie(Name) {
+             var search = Name + "="//查询检索的值
+             var returnvalue = "";//返回值
+             if (document.cookie.length > 0) {
+                 sd = document.cookie.indexOf(search);
+                 if (sd!= -1) {
+                     sd += search.length;
+                     end = document.cookie.indexOf(";", sd);
+                     if (end == -1)
+                         end = document.cookie.length;
+                     //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                     returnvalue=unescape(document.cookie.substring(sd, end))
+                 }
+             }
+             return returnvalue;
+         }
+         var username=get_cookie("username");
+         //请求后端数据
+         //请求接口
+         $.ajax({
+             type: "post"
+             ,url: "userEditAjax"
+             ,async: false
+             ,cache: false
+             ,data: {"username":username}
+             ,dataType: "json"
+             ,success: function(res){
+                 //表单初始赋值
+                 form.val('userEdit', {
+                     "username": res.username
+                     ,"nickname":res.nickname
+                     ,"email":res.email
+                     ,"phone":res.phone
+                     ,"province":res.province
+                     ,"city":res.city
+                     ,"image":res.image
+                     ,"sex":res.sex
+                     ,"role":res.role
+                     ,"backgroundimage":res.backgroundimage
+                     ,"carnumber":res.carnumber
+                     ,"birthday":res.birthday
+                     ,"signature":res.signature
+                 });
+                 return false
+             }
+         });
+
+         //监听提交表单
+         form.on('submit(setUserInfo)', function(data){
+
+
+             //Ajax请求后端更新用户
+             $.ajax({
+                 type: "post"
+                 ,url: "updateUserAjax"
+                 ,async: false
+                 ,cache: false
+                 ,data: data.field
+                 ,dataType: "json"
+                 ,success: function(res){
+                     layer.msg('更新成功', {
+                         offset: '15px'
+                         ,icon: 1
+                         ,time: 1000
+
+                     }, function(){
+                         //location.href= '/views/user/login.html'; //跳转到登入页
+                         //table.reload('LAY-shop-table'); //数据刷新
+                         parent.location.href= '/views/user/login.html';
+                         //table.reload('LAY-shop-table');
+                     });
+                     layer.close(index);
+                     return false
+                 }
+             });
+
+             return false;
+         });
+     });
+</script>
+
+  <script>
+      layui.config({
+          base: '../../../layuiadmin/' //静态资源所在路径
+      }).extend({
+          index: 'lib/index' //主入口模块
+      }).use(['index', 'form', 'upload'], function(){
+          var $ = layui.$
+              ,form = layui.form
+              ,upload = layui.upload ;
+
+          //监听提交
+          form.on('submit(formDemo)', function(data){
+              layer.msg(JSON.stringify(data.field));
+              return false;
+          });
+
+
+          var filename;
+          //上传头像图片
+          upload.render({
+              elem: '#LAY_imageUpload'  //绑定上传按钮
+              /*,url: layui.setter.base + 'json/upload/demo.js'*/
+              ,url: 'userImageAjax'
+              ,accept: 'images'
+              ,method: 'post'
+              ,acceptMime: 'image/!*'
+              ,before: function(obj){
+                  //预读本地文件示例，不支持ie8
+                  obj.preview(function(index, file, result){
+                      filename=file.name;
+                      // $('#demo1').attr('src', result); //图片链接（base64）
+                  });
+              }
+              ,done: function(res){
+                  if (res.code===0){
+                      /* $(this.item).prev("div").children("input").val(res.data.src)  G:\tree.jpg*/
+                      $(this.item).prev("div").children("input").val(res.data)
+                  }
+              }
+          });
+
+      })
+  </script>
+
+
+</body>
+</html>

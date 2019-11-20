@@ -1,0 +1,181 @@
+
+<!--朋友圈消息添加页面-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+<body>
+
+  <div class="layui-form" lay-filter="user-message" id="user-message" style="padding: 20px 0 0 0;">
+   <div class="layui-form-item">
+      <label class="layui-form-label">用户ID</label>
+      <div class="layui-input-inline">
+        <input type="text" id="uid" name="uid"  class="layui-input" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+      <div class="layui-form-item">
+          <label class="layui-form-label">用户名</label>
+          <div class="layui-input-inline">
+              <input type="text" id="username" name="username"  class="layui-input" autocomplete="off" class="layui-input">
+          </div>
+      </div>
+
+      <div class="layui-form-item">
+          <label class="layui-form-label">用户昵称</label>
+          <div class="layui-input-inline">
+              <input type="text" id="nickname" name="nickname"  class="layui-input" autocomplete="off" class="layui-input">
+          </div>
+      </div>
+
+      <div class="layui-form-item">
+          <label class="layui-form-label">发布内容</label>
+          <div class="layui-input-inline">
+              <input type="text" id="content" name="content"  class="layui-input" autocomplete="off" class="layui-input">
+          </div>
+      </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">发布图片</label>
+      <div class="layui-input-inline">
+        <input type="text" name="picture"  lay-verify="required" placeholder="请上传图片" autocomplete="off" class="layui-input" >
+      </div>
+      <button style="float: left;" type="button" class="layui-btn"  lay-filter="layuiadmin-upload-useradmin" id="layuiadmin-upload-useradmin">上传图片</button>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">时间</label>
+      <div class="layui-input-inline">
+        <input type="text" name="time" class="layui-input" id="shopTime" placeholder="yyyy-MM-dd">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">位置</label>
+      <div class="layui-input-inline">
+        <input type="text"  name="location" id="location" lay-verify="required"  placeholder="请输入位置" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+
+      <div class="layui-form-item">
+          <div class="layui-input-block">
+              <button class="layui-btn" lay-submit="" lay-filter="message-submit">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+          </div>
+      </div>
+
+  </div>
+
+
+  <script src="../../layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'form', 'upload'], function(){
+    var $ = layui.$
+    ,form = layui.form
+    ,upload = layui.upload ;
+
+
+
+
+      //对表单的操作
+      layui.use(['form', 'layedit', 'laydate'], function() {
+          var form = layui.form
+              , layer = layui.layer
+              , layedit = layui.layedit
+              , laydate = layui.laydate;
+
+
+          function get_cookie(Name) {
+              var search = Name + "="//查询检索的值
+              var returnvalue = "";//返回值
+              if (document.cookie.length > 0) {
+                  sd = document.cookie.indexOf(search);
+                  if (sd!= -1) {
+                      sd += search.length;
+                      end = document.cookie.indexOf(";", sd);
+                      if (end == -1)
+                          end = document.cookie.length;
+                      //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                      returnvalue=unescape(document.cookie.substring(sd, end))
+                  }
+              }
+              return returnvalue;
+          }
+          var username=get_cookie("username");
+          var nickname=get_cookie("nickname");
+
+          //表单初始赋值
+          form.val('user-message', {
+              "username": username,
+              "nickname":nickname
+          });
+
+
+          //上传图片
+          var filename;
+          upload.render({
+              elem: '#layuiadmin-upload-useradmin'  //绑定上传按钮
+              ,url: 'ImageUploadAjax'
+              ,accept: 'images'
+              ,method: 'post'
+              ,data:{imageName:filename}
+              ,acceptMime: 'image/!*'
+              ,before: function(obj){
+                  //预读本地文件示例，不支持ie8
+                  obj.preview(function(index, file, result){
+                      filename=file.name;
+                      layer.alert(filename)
+                      // $('#demo1').attr('src', result); //图片链接（base64）
+                  });
+              }
+              ,done: function(res){
+                  /* $(this.item).prev("div").children("input").val(res.data.src)  G:\tree.jpg*/
+                  $(this.item).prev("div").children("input").val(res.data.src)
+              }
+          });
+
+          //监听提交
+          form.on('submit(message-submit)', function(data){
+              layer.msg(JSON.stringify(data.field));
+              //发布消息
+                $.ajax({
+                    type: "post"
+                    ,url: "addMessageAjax"
+                    ,async: false
+                    ,data: data.field
+                    ,traditional: true
+                    //,dataType: "json"
+                    ,success: function(res){
+                        layer.msg('发布成功', {
+                            offset: '15px'
+                            ,icon: 1
+                            ,time: 2000
+                        });
+                        return false
+                    }
+                });
+          });
+      });
+  })
+  </script>
+  <!--时间选择器-->
+  <script>
+      layui.use('laydate', function(){
+          var laydate = layui.laydate;
+
+          //执行一个laydate实例
+          laydate.render({
+              elem: '#shopTime' //指定元素
+          });
+      });
+  </script>
+
+</body>
+</html>

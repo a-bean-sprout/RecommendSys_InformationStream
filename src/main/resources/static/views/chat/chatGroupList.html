@@ -1,0 +1,359 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="utf-8">
+        <title>shopList</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    </head>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <script type="text/html" id="toolbarEdit">
+                <div style="padding-bottom: 10px;">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-event="batchdel">删除</button>
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-event="add">添加</button>
+                </div>
+            </script>
+            <!--表格主体-->
+            <table id="LAY-shop-table" lay-filter="LAY-shop-table"></table>
+            <script type="text/html" id="table-shop-edit">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="groupNumberList">群成员</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="addShopContent">评论</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="shopContentList">评论列表</a>
+            </script>
+            <script type="text/html" id="img">
+                <img style="display: inline-block; width: 70%; height: 90%;" src= {{d.imagepath}}>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script src="../../layuiadmin/layui/layui.js"></script>
+
+
+<script>
+    layui.define(['table', 'form'], function(exports){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,view = layui.view
+            ,table = layui.table
+            ,form = layui.form;
+
+        //用户管理
+        table.render({
+            elem: '#LAY-shop-table'//LAY-shop-table 表格的ID
+            ,url: 'getAllChatGroupAjax' //模拟接口*/
+            ,toolbar: '#toolbarEdit'  //添加删除工作栏
+            ,method: 'POST'
+            ,cols: [[
+                 {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', sort: true}
+                ,{field: 'groupAvatar', title: '群头像'}
+                ,{field: 'groupName', title: '群名称' }
+                ,{field: 'groupNickname', title: '群昵称'}
+                ,{field: 'groupDescription', title: '群描述'}
+                ,{field: 'creatorId', title: '创建者id'}
+                ,{field: 'creatorName', title: '创建者'}
+                ,{field: 'creatorNickname', title: '创建者昵称'}
+                ,{field: 'createdTime', title: '创建时间'}
+                ,{title: '操作',  align:'center', fixed: 'right', toolbar: '#table-shop-edit',width: 320}
+            ]]
+            ,page: true
+            ,limit: 10
+            ,height: '550px'
+            ,text: '对不起，加载出现异常！'
+        });
+        //监听工具条  监听的是Lay_filter
+        table.on('tool(LAY-shop-table)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'del'){
+
+              // layer.msg("要删除的："+ data.id);
+                layer.confirm('真的删除行么', function(index){
+                    //删除一个
+                    $.ajax({
+                        type: "post"
+                        ,url: "DelOneShopAjax"
+                        ,async: false
+                        ,data: {delOneId:data.id}
+                        ,traditional: true
+                        //,dataType: "json"
+                        ,success: function(res){
+                            layer.msg('删除成功', {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 2000
+                            }, function(){
+                                //location.href= '/views/user/login.html'; //跳转到登入页
+                                //table.reload('LAY-shop-table'); //数据刷新
+                                table.reload('LAY-shop-table');
+                            });
+                            return false
+                        }
+                    });
+                    layer.close(index);
+                    table.reload('LAY-shop-table'); //数据刷新
+                });
+            } else if(layEvent === 'edit'){
+             //   layer.alert('编辑行：<br>'+ JSON.stringify(data))
+                layer.open({
+                    type: 2
+                    ,title: '编辑群消息'
+                    ,content: 'groupUpdateForm.html'
+                    ,area:  ['480px', '680px']
+                    ,btn: ['确定', '取消']
+                    ,success: function(layero,index){
+                        var body = layer.getChildFrame('body',index);//绑定父子之间的关系，用于数据传递，缺少则无法传递
+                        //将夫页面内容传给子页面
+                        body.find('#id').val(data.id);
+                        body.find('#groupName').val(data.groupName);
+                        body.find('#groupNickname').val(data.groupNickname);
+                        body.find('#groupDescription').val(data.groupDescription);
+                        body.find('#creatorId').val(data.creatorId);
+                        body.find('#createdTime').val(data.createdTime);
+                        body.find('#groupAvatar').val(data.groupAvatar);
+                        body.find('#creatorName').val(data.creatorName);
+                        body.find('#creatorNickname').val(data.creatorNickname);
+
+                    }
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'LAY-shop-add-submit' //提交的ID
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+                            var field = data.field; //获取提交的字段
+                            layer.alert( JSON.stringify(field));
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            //请求接口
+                            $.ajax({
+                                type: "post"
+                                ,url: "updateGroupAjax"
+                                ,async: false
+                                ,cache: false
+                                ,data: field
+                                ,dataType: "json"
+                                ,success: function(res){
+                                    layer.msg('更新成功', {
+                                        offset: '15px'
+                                        ,icon: 1
+                                        ,time: 1000
+                                    }, function(){
+                                        //location.href= '/views/user/login.html'; //跳转到登入页
+                                        //table.reload('LAY-shop-table'); //数据刷新
+                                        table.reload('LAY-shop-table');
+                                    });
+                                    layer.close(index);
+                                    return false
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });
+
+            }else if(layEvent === 'addShopLike') {
+                // 点赞操作 传递的参数是商铺id
+                $.ajax({
+                    type: "post"
+                    ,url: "addShopLikeAjax"
+                    ,async: false
+                    ,data: {"id":data.id}  //商铺id
+                    ,traditional: true
+                    //,dataType: "json"
+                    ,success: function(res){
+                        layer.msg('点赞成功', {
+                            offset: '15px'
+                            ,icon: 1
+                            ,time: 2000
+                        }, function(){
+                            //location.href= '/views/user/login.html'; //跳转到登入页
+                            //table.reload('LAY-shop-table'); //数据刷新
+                            table.reload('LAY-shop-table');
+                        });
+                        return false
+                    }
+                });
+            }else if(layEvent ==='addShopContent'){
+                layer.open({
+                    type: 2
+                    ,title: '添加商铺评论'
+                    ,content: 'shopContentForm.html'
+                    ,area:  ['480px', '550px']
+                    ,btn: ['确定', '取消']
+                    ,success: function(layero,index){
+                        var body = layer.getChildFrame('body',index);//绑定父子之间的关系，用于数据传递，缺少则无法传递
+                        //将夫页面内容传给子页面
+                        body.find('#sid').val(data.id);
+                        body.find('#shopname').val(data.shopname);
+
+                    }
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'LAY-shop-add-submit' //提交的ID
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+                            var field = data.field; //获取提交的字段
+                            layer.alert( JSON.stringify(field));
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            //请求接口
+                            $.ajax({
+                                type: "post"
+                                ,url: "addShopContentAjax"
+                                ,async: false
+                                ,cache: false
+                                ,data: field
+                                ,dataType: "json"
+                                ,success: function(res){
+                                    layer.msg('评论成功', {
+                                        offset: '15px'
+                                        ,icon: 1
+                                        ,time: 1000
+                                    }, function(){
+                                        //location.href= '/views/user/login.html'; //跳转到登入页
+                                        //table.reload('LAY-shop-table'); //数据刷新
+                                        table.reload('LAY-shop-table');
+                                    });
+                                    layer.close(index);
+                                    return false
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });
+            }else if(layEvent ==='groupNumberList'){
+                //跳转到群组用户
+                function jump(){
+                    location.href= '/views/chat/usersList.html';
+                }
+                //设置用户名的cookie
+                document.cookie="gid="+data.id;
+
+                jump();
+            }
+        });
+
+        //头工具栏事件 toolbar 删除和添加操作
+        table.on('toolbar(LAY-shop-table)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = obj.data;
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (layEvent ==='add'){
+
+                layer.open({
+                    type: 2
+                    ,title: '添加群组'
+                    ,content: 'groupAddForm.html'
+                    ,area: ['480px', '680px']
+                    ,btn: ['确定', '取消']
+                    ,yes: function(index, layero){
+                        var iframeWindow = window['layui-layer-iframe'+ index]
+                            ,submitID = 'LAY-shop-add-submit' //提交的ID
+                            ,submit = layero.find('iframe').contents().find('#'+ submitID);
+
+                        //监听提交
+                        iframeWindow.layui.form.on('submit('+ submitID +')', function(data){
+                            var field = data.field; //获取提交的字段
+                            //layer.alert( JSON.stringify(field));
+                            //提交 Ajax 成功后，静态更新表格中的数据
+                            //$.ajax({});
+                            //请求接口
+                            $.ajax({
+                                type: "post"
+                                ,url: "addChatGroupAjax"
+                                ,async: false
+                                ,cache: false
+                                ,data: field
+                                ,dataType: "json"
+                                ,success: function(res){
+                                    layer.msg('添加成功', {
+                                        offset: '15px'
+                                        ,icon: 1
+                                        ,time: 1000
+
+                                    }, function(){
+                                        //location.href= '/views/user/login.html'; //跳转到登入页
+                                        //table.reload('LAY-shop-table'); //数据刷新
+                                        table.reload('LAY-shop-table');
+                                    });
+                                    layer.close(index);
+                                    return false
+                                }
+                            });
+                        });
+                        submit.trigger('click');
+                    }
+                });
+                //批量删除操作
+            }else if(layEvent ==='batchdel'){
+                var checkShop = table.checkStatus('LAY-shop-table')
+                    ,deldata = checkShop.data;
+                //layer.msg('选中了：'+ deldata.length + ' 个');
+                //将选中的数据放入数组
+                var array = new Array(deldata.length);
+                for (var i=0;i<array.length;i++){
+                    array[i]=deldata[i].id;
+                }
+                //layer.msg("选中的数据"+array.toString());
+                //layer.alert(JSON.stringify(data));
+                //批量删除
+
+                layer.confirm('真的删除行么', function(index){
+                    $.ajax({
+                        type: "post"
+                        ,url: "batchDelShopAjax"
+                        ,async: false
+                        ,data: {delId:array.toString()}
+                        ,traditional: true
+                        //,dataType: "json"
+                        ,success: function(res){
+                            layer.msg('删除成功', {
+                                offset: '15px'
+                                ,icon: 1
+                                ,time: 2000
+                            }, function(){
+                                //location.href= '/views/user/login.html'; //跳转到登入页
+                                //table.reload('LAY-shop-table'); //数据刷新
+                                table.reload('LAY-shop-table');
+                            });
+                            return false
+                        }
+                    });
+                    obj.del();
+                    layer.close(index);
+                    table.reload('LAY-shop-table'); //数据刷新
+                });
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

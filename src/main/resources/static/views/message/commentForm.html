@@ -1,0 +1,98 @@
+
+<!--为评论添加评论表-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+
+<div class="layui-form" lay-filter="layuiadmin-form-shop" id="layuiadmin-form-shop" style="padding: 20px 0 0 0;">
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">评论ID</label>
+    <div class="layui-input-inline">
+      <input type="text" id ="cid" name="cid"  disabled="true" lay-verify="required" class="layui-input" readonly="true" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">消息ID</label>
+    <div class="layui-input-inline">
+      <input type="text" id ="mid" name="mid"  disabled="true" lay-verify="required" class="layui-input" readonly="true" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">评论者id</label>
+    <div class="layui-input-inline">
+      <input type="text" id ="uid" name="uid" lay-verify="required" class="layui-input"  autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">用户名</label>
+    <div class="layui-input-inline">
+      <input type="text" id ="username" name="username" lay-verify="required" class="layui-input"  autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">用户昵称</label>
+    <div class="layui-input-inline">
+      <input type="text" id ="nickname" name="nickname" lay-verify="required" class="layui-input"  autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">评论内容</label>
+    <div class="layui-input-inline">
+      <input type="text" id="content" name="content" class="layui-input" >
+    </div>
+  </div>
+
+  <div class="layui-form-item layui-hide">
+    <input type="button" lay-submit=""  lay-submit lay-filter="LAY-shop-add-submit" id="LAY-shop-add-submit" value="确认">
+  </div>
+</div>
+
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'upload'], function(){
+        var $ = layui.$
+            ,form = layui.form
+            ,upload = layui.upload ;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+
+
+    })
+</script>
+<!--时间选择器-->
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#shopTime' //指定元素
+        });
+    });
+</script>
+
+</body>
+</html>

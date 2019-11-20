@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "采购单";
+}
+
+<style>
+    /* vue 解析前,屏蔽花括号源码*/
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<div class="col-sm-12 m-t-70" id="appContent" v-cloak>
+    <form class="form-horizontal" action="/Trade/PostForm" method="post">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th colspan="2">产品名称</th>
+                    <th class="text-center">价格</th>
+                    <th class="text-center">数量</th>
+                    <th class="text-center">合计</th>
+                    <th class="text-center">操作</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="item of shopItems">
+                    <td class="col-sm-1 hidden-xs">
+                        <a href="#" class="thumbnail m-b-0">
+                            <img :src="item.PreviewFile.FileURI" />
+                        </a>
+                    </td>
+
+                    <td class="col-sm-4">
+                        <h5 class="m-b-5"><a href="#">{{item.Name}}</a></h5>
+                        <h6>{{item.ProName}}</h6>
+                    </td>
+
+                    <td class="col-sm-2 text-center"><strong>￥{{item.Price}}</strong></td>
+
+                    <td class="col-sm-2 text-center">
+                        <div class="input-group">
+                            <span class="input-group-addon hidden-sm">
+                                <input v-on:click="changeCount(-1,item)" type="button" name="qty_minus" class="btn-qty" value="-" data-field="quantity" />
+                            </span>
+
+                            <input type="text" class="form-control text-center" :value="item.Count" />
+
+                            <span class="input-group-addon hidden-sm">
+                                <input v-on:click="changeCount(1,item)" type="button" name="qty_plus" class="btn-qty" value="+" data-field="quantity" />
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="col-sm-2 text-center"><strong>￥{{item.Amount}}</strong></td>
+
+                    <td class="col-sm-1 text-center">
+                        <a v-on:click="removeItem(item.Id)" class="btn btn-primary btn-square btn-sm"><i class="fas fa-times"></i></a>
+                    </td>
+                </tr>
+                <tr v-if="shopItems==null||shopItems.length==0">
+                    <td colspan="6">
+                        <div class="col-sm-12" style="padding:150px 15px;">
+                            <h4 class="text-center">采购单是空的，赶紧去<a class="btn-link" asp-action="Index" asp-controller="Product">挑选商品</a>吧~</h4>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="hidden-xs">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="b-t-0">您提交订单后我们会第一时间安排专人进行打包发货</td>
+                    <td colspan="3" class="b-t-0 text-right"><h3 class="m-b-0" v-if="shopItems!=null&&shopItems.length>0">合计&nbsp; ￥{{amount}}</h3></td>
+                </tr>
+
+                <tr>
+                    <td colspan="6" class="b-t-0 hidden-xs">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="b-t-0">
+                        <a asp-action="Index" asp-controller="Product" class="btn btn-default">返回挑选产品</a>
+                    </td>
+                    <td colspan="3" class="b-t-0 text-right">
+                        <a v-if="shopItems!=null&&shopItems.length>0" v-on:click="postForm()" class="btn btn-success"><i class="fas fa-shopping-bag"></i>&nbsp; 提交订单</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+
+
+        <input type="hidden" :name="'model['+index+'].Id'" :value="item.Id" v-for="(item, index) of shopItems" />
+        <input type="hidden" :name="'model['+index+'].Value'" :value="item.Count" v-for="(item, index) of shopItems" />
+    </form>
+</div>
+
+@section Scripts{
+<script src="~/lib/vue/vue.min.js"></script>
+<script src="~/js/cart.js"></script>
+}

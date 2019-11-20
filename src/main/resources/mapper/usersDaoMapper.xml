@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ocean.org.dao.usersDao">
+
+
+    <!--注册用户-->
+    <insert id="addRegisterUser" parameterType="String">
+        INSERT INTO
+            users (username,password,nickname)
+        VALUES
+            (#{username},#{password},#{nickname})
+    </insert>
+
+    <!--根据用户名查找用户-->
+    <select id="selectUserByName" resultType="com.ocean.org.domain.users" parameterType="String">
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            users.username = #{username}
+    </select>
+
+    <!--查找所有的用户-->
+    <select id="getAllUsers" resultType="com.ocean.org.domain.users">
+        SELECT
+            *
+        FROM
+            users
+    </select>
+
+    <select id="getUsersByRole" resultType="com.ocean.org.domain.users" parameterType="String">
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+          users.role=#{role}
+    </select>
+
+
+    <!--更新用户数据 不修改密码  updatePassword-->
+    <update id="updateUser" parameterType="com.ocean.org.domain.users">
+        UPDATE
+            users
+        SET
+            users.username=#{username},
+            users.nickname=#{nickname},
+            users.email=#{email},
+            users.phone=#{phone},
+            users.province=#{province},
+            users.city=#{city},
+            users.image=#{image},
+            users.sex=#{sex},
+            users.permission=#{permission}
+        WHERE
+            users.username=#{username}
+    </update>
+    <!--网站用户更改用户审核状态-->
+    <update id="updateWebUserState" parameterType="com.ocean.org.domain.users">
+        UPDATE
+        users
+        SET
+        users.username=#{username},
+        users.nickname=#{nickname},
+        users.state=#{state},
+        users.role=#{role}
+        WHERE
+        users.id=#{id}
+    </update>
+
+
+    <update id="updatePassword" parameterType="String">
+        UPDATE
+        users
+        SET
+        users.password=#{password}
+        WHERE
+        users.username=#{username}
+    </update>
+
+<!--        更新用户数据 兴趣的-->
+    <update id="updateUserCart" parameterType="com.ocean.org.domain.users">
+        UPDATE
+        users
+        SET
+        users.username=#{username},
+        users.nickname=#{nickname},
+        users.sex=#{sex},
+        users.age=#{age},
+        users.favoriteCat1=#{favoriteCat1},
+        users.favoriteCat2=#{favoriteCat2},
+        users.favoriteCat3=#{favoriteCat3},
+        users.userProfession=#{userProfession},
+        users.address=#{address},
+        users.company=#{company}
+        WHERE
+        users.username=#{username}
+    </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--根据城市得到用户-->
+    <select id="getUsersByCity" parameterType="String" resultType="com.ocean.org.domain.users">
+        SELECT
+              *
+        FROM
+              users
+        WHERE
+            users.city=#{city}
+    </select>
+
+    <!--根据用户id得到其关注的id 返回结果为list-->
+    <select id="getAttentionIdByUid" resultType="Integer" parameterType="Integer">
+        SELECT
+            rid
+        FROM
+            relationship
+        WHERE
+            uid=#{uid};
+    </select>
+
+    <select id="getFriendsIdByUid" resultType="Integer" parameterType="Integer">
+        SELECT
+            uid
+        FROM
+            relationship
+        WHERE
+            rid=#{uid}
+        AND
+            uid
+        IN
+            (SELECT
+                 rid
+             FROM
+                 relationship
+             WHERE
+                 uid=#{uid}
+            );
+    </select>
+
+
+    <!--根据用户id得到其粉丝的id 返回结果为list-->
+    <select id="getFanIdByUid"  resultType="Integer" parameterType="Integer">
+        SELECT
+            uid
+        FROM
+            relationship
+        WHERE
+            rid=#{uid};
+    </select>
+
+    <!--根据用户id得到用户 返回结果为user-->
+    <select id="getUserByUid"  resultType="com.ocean.org.domain.users" parameterType="Integer">
+        SELECT
+        *
+        FROM
+        users
+        WHERE
+        id=#{uid};
+    </select>
+    <!--根据用户id的List得到用户List 返回结果为list-->
+    <select id="getUserListByListId" parameterType="Integer" resultType="com.ocean.org.domain.users">
+        SELECT * FROM
+            users
+        WHERE
+            users.id
+        IN
+        <foreach collection="list"  item="item" open="(" separator="," close=")"  >
+            #{item}
+        </foreach>
+    </select>
+
+
+    <!--关注用户-->
+    <insert id="attentionUser" parameterType="Integer">
+        INSERT INTO
+            relationship (uid,rid)
+        VALUES
+        (#{uid},#{rid})
+    </insert>
+
+    <delete id="unAttentionUser" parameterType="Integer">
+        DELETE FROM
+            relationship
+        WHERE
+            uid=#{uid}
+        AND
+            rid=#{rid}
+
+
+    </delete>
+
+    <!--添加一个用户到黑名单-->
+    <insert id="addUserInBlackList" parameterType="Integer">
+        INSERT INTO
+            relationship(uid,bid)
+        VALUES
+            (#{uid},#{bid})
+
+
+    </insert>
+
+    <!--得到系统中所有的用户名-->
+    <select id="getAllUserName" resultType="String">
+        SELECT
+            username
+        FROM
+            users
+    </select>
+
+
+
+
+</mapper>
